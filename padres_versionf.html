@@ -1,0 +1,2034 @@
+<!doctype html>
+<html lang="es">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DetoxTime - Padres</title>
+  <style>
+    :root {
+      --color-primary: #66BB6A;
+      --color-primary-dark: #43A047;
+      --color-primary-darker: #2E7D32;
+      --color-primary-light: #81C784;
+      --color-primary-lighter: #E8F5E9;
+      --color-accent: #FFD54F;
+      --color-accent-dark: #FFA726;
+      --color-background: #F5F5F5;
+      --color-surface: #FFFFFF;
+      --color-text: #2E7D32;
+      --color-text-secondary: #757575;
+      --color-error: #F44336;
+      --color-success: #66BB6A;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Nunito', 'Comic Sans MS', 'Arial Rounded MT Bold', sans-serif;
+      background: linear-gradient(135deg, var(--color-primary-lighter) 0%, #FFF9C4 100%);
+      overflow-x: hidden;
+    }
+
+    html, body, #app-container {
+      height: 100%;
+      width: 100%;
+    }
+
+    #app-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .phone-frame {
+      width: 100%;
+      max-width: 380px;
+      height: 100%;
+      max-height: 750px;
+      background: var(--color-surface);
+      border-radius: 40px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .phone-notch {
+      height: 30px;
+      background: #1A1A1A;
+      border-radius: 0 0 20px 20px;
+      width: 60%;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .screen-content {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      background: linear-gradient(180deg, var(--color-primary-lighter) 0%, var(--color-surface) 100%);
+      position: relative;
+    }
+
+    .screen {
+      display: none;
+      min-height: 100%;
+      padding: 20px;
+      animation: fadeIn 0.3s ease-in;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+      gap: 10px;
+    }
+
+    .back-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--color-surface);
+      border: 2px solid var(--color-primary-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 20px;
+      color: var(--color-primary);
+    }
+
+    .back-btn:hover {
+      background: var(--color-primary-light);
+      color: var(--color-surface);
+      transform: scale(1.05);
+    }
+
+    .title {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--color-text);
+      flex: 1;
+    }
+
+    .plant-avatar {
+      width: 120px;
+      height: 140px;
+      margin: 20px auto;
+      position: relative;
+      animation: plantGrow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes plantGrow {
+      from { transform: scale(1); }
+      to { transform: scale(1.05); }
+    }
+
+    .btn {
+      width: 100%;
+      padding: 16px;
+      border-radius: 25px;
+      border: none;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin: 8px 0;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      font-family: inherit;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+      color: var(--color-surface);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(102, 187, 106, 0.4);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-secondary {
+      background: var(--color-surface);
+      color: var(--color-primary);
+      border: 2px solid var(--color-primary);
+    }
+
+    .btn-secondary:hover {
+      background: var(--color-primary-lighter);
+    }
+
+    .btn-danger {
+      background: #FFEBEE;
+      color: #C62828;
+      border: 2px solid #EF5350;
+    }
+
+    .btn-danger:hover {
+      background: #FFCDD2;
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 14px 18px;
+      border-radius: 20px;
+      border: 2px solid #E0E0E0;
+      font-size: 15px;
+      margin: 10px 0;
+      transition: all 0.3s ease;
+      font-family: inherit;
+    }
+
+    .input-field:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(102, 187, 106, 0.1);
+    }
+
+    .input-field.error {
+      border-color: var(--color-error);
+    }
+
+    textarea.input-field {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .error-message {
+      color: var(--color-error);
+      font-size: 13px;
+      margin-top: 4px;
+      display: none;
+    }
+
+    .error-message.show {
+      display: block;
+    }
+
+    .success-message {
+      color: var(--color-success);
+      font-size: 13px;
+      margin-top: 4px;
+      display: none;
+    }
+
+    .success-message.show {
+      display: block;
+    }
+
+    .card {
+      background: var(--color-surface);
+      border-radius: 20px;
+      padding: 16px;
+      margin: 12px 0;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+    }
+
+    .family-member {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      background: linear-gradient(135deg, #FFF9C4 0%, var(--color-surface) 100%);
+      border-radius: 16px;
+      margin: 8px 0;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .delete-member-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #FFEBEE;
+      color: #C62828;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+
+    .delete-member-btn:hover {
+      background: #EF5350;
+      color: white;
+      transform: scale(1.1);
+    }
+
+    .mini-plant {
+      width: 50px;
+      height: 60px;
+    }
+
+    .member-info {
+      flex: 1;
+    }
+
+    .member-name {
+      font-weight: 700;
+      color: var(--color-text);
+      font-size: 16px;
+    }
+
+    .screen-time {
+      font-size: 13px;
+      color: var(--color-text-secondary);
+      margin-top: 4px;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: #E0E0E0;
+      border-radius: 10px;
+      overflow: hidden;
+      margin: 8px 0;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+      border-radius: 10px;
+      transition: width 0.5s ease;
+    }
+
+    .mission-card {
+      background: linear-gradient(135deg, #E3F2FD 0%, var(--color-surface) 100%);
+      border-radius: 20px;
+      padding: 16px;
+      margin: 12px 0;
+      border: 2px solid var(--color-primary-light);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .mission-card:hover {
+      transform: scale(1.02);
+      box-shadow: 0 6px 20px rgba(129, 199, 132, 0.3);
+    }
+
+    .mission-icon {
+      width: 60px;
+      height: 60px;
+      margin: 0 auto 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+    }
+
+    .mission-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--color-primary-darker);
+      text-align: center;
+      margin: 8px 0;
+    }
+
+    .stat-card {
+      background: linear-gradient(135deg, var(--color-surface) 0%, #F3E5F5 100%);
+      border-radius: 16px;
+      padding: 16px;
+      margin: 10px 0;
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: var(--color-text-secondary);
+      margin-bottom: 6px;
+    }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--color-primary-darker);
+    }
+
+    .toggle-switch {
+      position: relative;
+      width: 50px;
+      height: 26px;
+      background: #E0E0E0;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .toggle-switch.active {
+      background: var(--color-primary);
+    }
+
+    .toggle-knob {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: var(--color-surface);
+      border-radius: 50%;
+      top: 3px;
+      left: 3px;
+      transition: transform 0.3s ease;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .toggle-switch.active .toggle-knob {
+      transform: translateX(24px);
+    }
+
+    .reward-badge {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-dark) 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      margin: 10px;
+      box-shadow: 0 4px 12px rgba(255, 167, 38, 0.4);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .chart-container {
+      background: var(--color-surface);
+      border-radius: 16px;
+      padding: 16px;
+      margin: 12px 0;
+    }
+
+    .chart-bar {
+      display: flex;
+      align-items: center;
+      margin: 10px 0;
+    }
+
+    .chart-label {
+      width: 80px;
+      font-size: 13px;
+      color: var(--color-text-secondary);
+    }
+
+    .chart-bar-fill {
+      flex: 1;
+      height: 24px;
+      background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+      border-radius: 12px;
+      position: relative;
+      margin: 0 10px;
+    }
+
+    .chart-value {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--color-text);
+    }
+
+    .celebration {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: var(--color-accent);
+      animation: confettiFall 3s linear;
+    }
+
+    @keyframes confettiFall {
+      to {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    .logo-text {
+      font-size: 28px;
+      font-weight: 900;
+      text-align: center;
+      margin: 20px 0 10px;
+      background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-darker) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: var(--color-text-secondary);
+      font-size: 16px;
+      margin-bottom: 30px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .settings-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px;
+      background: var(--color-surface);
+      border-radius: 16px;
+      margin: 8px 0;
+    }
+
+    .settings-item.editable {
+      cursor: pointer;
+    }
+
+    .settings-item.editable:hover {
+      background: var(--color-primary-lighter);
+    }
+
+    .settings-label {
+      font-size: 15px;
+      color: #424242;
+      font-weight: 600;
+    }
+
+    .emoji-large {
+      font-size: 60px;
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .message-box {
+      background: linear-gradient(135deg, #E3F2FD 0%, var(--color-surface) 100%);
+      border-radius: 20px;
+      padding: 20px;
+      margin: 20px 0;
+      text-align: center;
+      border: 2px solid var(--color-primary-light);
+    }
+
+    .message-text {
+      font-size: 16px;
+      color: #424242;
+      line-height: 1.6;
+    }
+
+    .badge-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin: 20px 0;
+    }
+
+    .emoji-picker {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      margin: 16px 0;
+    }
+
+    .emoji-option {
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 30px;
+      cursor: pointer;
+      border-radius: 12px;
+      border: 2px solid transparent;
+      transition: all 0.3s ease;
+    }
+
+    .emoji-option:hover {
+      background: var(--color-primary-lighter);
+      transform: scale(1.1);
+    }
+
+    .emoji-option.selected {
+      border-color: var(--color-primary);
+      background: var(--color-primary-lighter);
+    }
+
+    .alert {
+      padding: 12px 16px;
+      border-radius: 12px;
+      margin: 12px 0;
+      font-size: 14px;
+      display: none;
+    }
+
+    .alert.show {
+      display: block;
+      animation: slideIn 0.3s ease-out;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .alert-error {
+      background: #FFEBEE;
+      color: #C62828;
+      border: 1px solid #EF5350;
+    }
+
+    .alert-success {
+      background: #E8F5E9;
+      color: #2E7D32;
+      border: 1px solid var(--color-primary);
+    }
+
+    .alert-info {
+      background: #E3F2FD;
+      color: #1976D2;
+      border: 1px solid #42A5F5;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .tab {
+      flex: 1;
+      padding: 12px;
+      background: var(--color-surface);
+      border: 2px solid #E0E0E0;
+      border-radius: 12px;
+      cursor: pointer;
+      text-align: center;
+      font-weight: 600;
+      color: var(--color-text-secondary);
+      transition: all 0.3s ease;
+    }
+
+    .tab.active {
+      background: var(--color-primary);
+      color: var(--color-surface);
+      border-color: var(--color-primary);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.show {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--color-surface);
+      border-radius: 20px;
+      padding: 24px;
+      max-width: 340px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      animation: modalSlide 0.3s ease-out;
+    }
+
+    @keyframes modalSlide {
+      from {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .modal-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--color-text);
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    .input-group {
+      margin: 12px 0;
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--color-text);
+      margin-bottom: 6px;
+    }
+  </style>
+ </head>
+ <body>
+  <div id="app-container">
+   <div class="phone-frame">
+    <div class="phone-notch"></div>
+    <div class="screen-content">
+      
+      <!-- Pantalla 1: Splash / Bienvenida -->
+      <div id="splash" class="screen active">
+        <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100%; padding: 40px 20px;">
+          <div class="logo-text">DetoxTime</div>
+          <div class="subtitle">Versión Padres</div>
+          <div class="plant-avatar">
+            <svg viewBox="0 0 120 140" style="width: 100%; height: 100%;">
+              <path d="M35 120 L30 140 L90 140 L85 120 Z" fill="#E65100" stroke="#BF360C" stroke-width="2" />
+              <ellipse cx="60" cy="120" rx="30" ry="8" fill="#FF6F00" />
+              <ellipse cx="60" cy="120" rx="25" ry="6" fill="#5D4037" />
+              <path d="M60 120 Q58 100 60 80" stroke="#43A047" stroke-width="6" fill="none" stroke-linecap="round" />
+              <ellipse cx="50" cy="90" rx="15" ry="20" fill="#66BB6A" transform="rotate(-30 50 90)" />
+              <ellipse cx="70" cy="85" rx="15" ry="20" fill="#81C784" transform="rotate(30 70 85)" />
+              <ellipse cx="55" cy="70" rx="18" ry="22" fill="#66BB6A" transform="rotate(-20 55 70)" />
+              <ellipse cx="65" cy="65" rx="18" ry="22" fill="#81C784" transform="rotate(20 65 65)" />
+              <circle cx="60" cy="50" r="12" fill="#FFD54F" />
+              <circle cx="55" cy="45" r="8" fill="#FFF59D" />
+              <circle cx="65" cy="45" r="8" fill="#FFF59D" />
+              <circle cx="55" cy="55" r="8" fill="#FFF59D" />
+              <circle cx="65" cy="55" r="8" fill="#FFF59D" />
+              <circle cx="60" cy="50" r="6" fill="#FFA726" />
+            </svg>
+          </div>
+          <div class="emoji-large">🌱</div>
+          
+          <div id="splash-alert" class="alert"></div>
+          
+          <button class="btn btn-primary" onclick="checkAuthAndNavigate()">Continuar</button>
+          <p style="text-align: center; color: #9E9E9E; font-size: 13px; margin-top: 30px;">Cultivemos juntos hábitos saludables en familia</p>
+        </div>
+      </div>
+
+      <!-- Pantalla 2: Login / Registro -->
+      <div id="login" class="screen">
+        <div class="header">
+          <div class="back-btn" onclick="navigateTo('splash')">←</div>
+          <div class="title">Bienvenido/a</div>
+        </div>
+
+        <div style="text-align: center; margin: 30px 0;">
+          <div style="font-size: 50px;">👨‍👩‍👧‍👦</div>
+          <p style="color: var(--color-text-secondary); margin-top: 10px;">Accede a tu cuenta familiar</p>
+        </div>
+
+        <div class="tabs">
+          <div class="tab active" onclick="switchTab('login-tab')">Iniciar Sesión</div>
+          <div class="tab" onclick="switchTab('register-tab')">Registrarse</div>
+        </div>
+
+        <!-- Tab de Login -->
+        <div id="login-tab" class="tab-content active">
+          <div class="card">
+            <h3 style="color: var(--color-text); margin-bottom: 16px;">Ingresa a tu cuenta</h3>
+            <div id="login-alert" class="alert"></div>
+            <input type="email" id="login-email" class="input-field" placeholder="Correo electrónico" autocomplete="email">
+            <div id="login-email-error" class="error-message">Por favor ingresa un correo válido</div>
+            <input type="password" id="login-password" class="input-field" placeholder="Contraseña" autocomplete="current-password">
+            <div id="login-password-error" class="error-message">La contraseña es requerida</div>
+            <button class="btn btn-primary" onclick="login()">Iniciar Sesión</button>
+          </div>
+        </div>
+
+        <!-- Tab de Registro -->
+        <div id="register-tab" class="tab-content">
+          <div class="card">
+            <h3 style="color: var(--color-text); margin-bottom: 16px;">Crea tu cuenta</h3>
+            <div id="register-alert" class="alert"></div>
+            <input type="text" id="register-name" class="input-field" placeholder="Nombre completo" autocomplete="name">
+            <div id="register-name-error" class="error-message">El nombre es requerido</div>
+            <input type="email" id="register-email" class="input-field" placeholder="Correo electrónico" autocomplete="email">
+            <div id="register-email-error" class="error-message">Por favor ingresa un correo válido</div>
+            <input type="password" id="register-password" class="input-field" placeholder="Contraseña (mínimo 6 caracteres)" autocomplete="new-password">
+            <div id="register-password-error" class="error-message">La contraseña debe tener al menos 6 caracteres</div>
+            <input type="password" id="register-password-confirm" class="input-field" placeholder="Confirmar contraseña" autocomplete="new-password">
+            <div id="register-password-confirm-error" class="error-message">Las contraseñas no coinciden</div>
+            <button class="btn btn-primary" onclick="register()">Crear Cuenta</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pantalla 3: Dashboard Familiar -->
+      <div id="dashboard" class="screen">
+        <div class="header">
+          <div class="title">Mi Familia</div>
+          <div style="width: 40px; height: 40px; background: var(--color-accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer;" onclick="navigateTo('settings')">⚙️</div>
+        </div>
+
+        <div class="card" style="background: linear-gradient(135deg, #FFF9C4 0%, var(--color-surface) 100%); border: 2px solid var(--color-accent);">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="font-size: 30px;">🌟</div>
+            <div style="flex: 1;">
+              <div style="font-weight: 700; color: #F57F17; font-size: 16px;">¡Racha de 5 días!</div>
+              <div style="font-size: 13px; color: var(--color-text-secondary);">Toda la familia cumpliendo metas</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin: 20px 0 12px;">
+          <h3 style="color: var(--color-text); margin: 0;">Miembros de la familia</h3>
+          <button class="btn btn-secondary" onclick="showAddMemberModal()" style="width: auto; padding: 8px 16px; margin: 0; font-size: 14px;">+ Agregar</button>
+        </div>
+        
+        <div id="family-members-container">
+          <!-- Los miembros se cargarán aquí dinámicamente -->
+        </div>
+
+        <div class="grid-2" style="margin-top: 20px;">
+          <button class="btn btn-primary" onclick="navigateTo('missions')" style="display: flex; flex-direction: column; align-items: center; gap: 8px; height: 100px;">
+            <span style="font-size: 32px;">🎯</span>
+            <span>Misiones</span>
+          </button>
+          <button class="btn btn-secondary" onclick="navigateTo('stats')" style="display: flex; flex-direction: column; align-items: center; gap: 8px; height: 100px;">
+            <span style="font-size: 32px;">📊</span>
+            <span>Estadísticas</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Pantalla 4: Perfil del Niño -->
+      <div id="child-profile" class="screen">
+        <div class="header">
+          <div class="back-btn" onclick="navigateTo('dashboard')">←</div>
+          <div class="title" id="child-profile-title">Perfil</div>
+        </div>
+
+        <div class="plant-avatar" style="margin: 30px auto;">
+          <svg viewBox="0 0 120 140" style="width: 100%; height: 100%;">
+            <path d="M35 120 L30 140 L90 140 L85 120 Z" fill="#E65100" stroke="#BF360C" stroke-width="2" />
+            <ellipse cx="60" cy="120" rx="30" ry="8" fill="#FF6F00" />
+            <ellipse cx="60" cy="120" rx="25" ry="6" fill="#5D4037" />
+            <path d="M60 120 Q58 90 60 60" stroke="#43A047" stroke-width="6" fill="none" stroke-linecap="round" />
+            <ellipse cx="48" cy="95" rx="16" ry="22" fill="#66BB6A" transform="rotate(-35 48 95)" />
+            <ellipse cx="72" cy="90" rx="16" ry="22" fill="#81C784" transform="rotate(35 72 90)" />
+            <ellipse cx="50" cy="75" rx="18" ry="24" fill="#66BB6A" transform="rotate(-25 50 75)" />
+            <ellipse cx="70" cy="70" rx="18" ry="24" fill="#81C784" transform="rotate(25 70 70)" />
+            <ellipse cx="55" cy="55" rx="20" ry="26" fill="#66BB6A" transform="rotate(-15 55 55)" />
+            <ellipse cx="65" cy="50" rx="20" ry="26" fill="#81C784" transform="rotate(15 65 50)" />
+          </svg>
+        </div>
+
+        <div class="card">
+          <h3 style="color: var(--color-text); margin-bottom: 16px;">Uso de pantallas hoy</h3>
+          <div style="text-align: center;">
+            <div style="font-size: 48px; font-weight: 800; color: var(--color-primary);" id="child-time-today">45 min</div>
+            <div style="color: var(--color-text-secondary); margin-top: 8px;" id="child-time-limit">de 2 horas permitidas</div>
+          </div>
+          <div class="progress-bar" style="margin-top: 16px; height: 12px;">
+            <div class="progress-fill" style="width: 37.5%;" id="child-progress"></div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-label">Tendencia semanal</div>
+          <div style="display: flex; justify-content: space-around; margin-top: 12px;">
+            <div style="text-align: center;">
+              <div style="font-size: 20px; font-weight: 700; color: var(--color-primary);">↓ 15%</div>
+              <div style="font-size: 12px; color: var(--color-text-secondary);">vs. semana anterior</div>
+            </div>
+            <div style="text-align: center;">
+              <div style="font-size: 20px; font-weight: 700; color: var(--color-accent-dark);">6/7</div>
+              <div style="font-size: 12px; color: var(--color-text-secondary);">días con meta</div>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn btn-primary" onclick="navigateTo('missions')">Ver misiones activas</button>
+        <button class="btn btn-secondary" onclick="navigateTo('parental-control')">Ajustar límites y horarios</button>
+      </div>
+
+      <!-- Pantalla 5: Misiones -->
+      <div id="missions" class="screen">
+        <div class="header">
+          <div class="back-btn" onclick="navigateTo('dashboard')">←</div>
+          <div class="title">Misiones del Día</div>
+        </div>
+
+        <div class="card" style="background: linear-gradient(135deg, #E3F2FD 0%, var(--color-surface) 100%); border: 2px solid var(--color-primary);">
+          <div style="text-align: center; padding: 12px;">
+            <div style="font-size: 40px;">🎯</div>
+            <div style="font-size: 18px; font-weight: 700; color: var(--color-primary-darker); margin-top: 8px;" id="missions-count">3 misiones disponibles hoy</div>
+          </div>
+        </div>
+
+        <h3 style="color: var(--color-text); margin: 20px 0 12px;">Misiones activas</h3>
+        
+        <div id="missions-container">
+          <!-- Misiones se cargarán aquí dinámicamente -->
+        </div>
+
+        <div class="grid-2" style="margin-top: 20px;">
+          <button class="btn btn-secondary" onclick="navigateTo('create-mission')">Crear misión personalizada</button>
+          <button class="btn btn-primary" onclick="addRandomMission()">Pedir nueva misión</button>
+        </div>
+      </div>
+
+      <!-- Pantalla 6: Crear Misión Personalizada -->
+      <div id="create-mission" class="screen">
+        <div class="header">
+          <div class="back-btn" onclick="navigateTo('missions')">←</div>
+          <div class="title">Crear Misión</div>
+        </div>
+
+        <p style="text-align: center; color: var(--color-text-secondary); margin-bottom: 20px;">Diseña una misión especial para tu familia</p>
+        
+        <div class="card">
+          <h3 style="color: var(--color-text); margin-bottom: 16px;">Elige un ícono</h3>
+          <div class="emoji-picker" id="emoji-picker">
+            <div class="emoji-option selected" data-emoji="🎯">🎯</div>
+            <div class="emoji-option" data-emoji="🌟">🌟</div>
+            <div class="emoji-option" data-emoji="🎨">🎨</div>
+            <div class="emoji-option" data-emoji="🏃">🏃</div>
+            <div class="emoji-option" data-emoji="📚">📚</div>
+            <div class="emoji-option" data-emoji="🎵">🎵</div>
+            <div class="emoji-option" data-emoji="🧩">🧩</div>
+            <div class="emoji-option" data-emoji="⚽">⚽</div>
+            <div class="emoji-option" data-emoji="🌳">🌳</div>
+            <div class="emoji-option" data-emoji="🍎">🍎</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 style="color: var(--color-text); margin-bottom: 16px;">Detalles de la misión</h3>
+          <div id="create-mission-alert" class="alert"></div>
+          <input type="text" class="input-field" id="mission-title-input" placeholder="Título de la misión" maxlength="50">
+          <div id="mission-title-error" class="error-message">El título es requerido</div>
+          <textarea class="input-field" id="mission-description-input" placeholder="Descripción de la misión..." maxlength="200"></textarea>
+          <div id="mission-description-error" class="error-message">La descripción es requerida</div>
+          
+          <h4 style="color: var(--color-text); margin: 16px 0 8px; font-size: 15px;">Duración estimada</h4>
+          <select class="input-field" id="mission-duration">
+            <option value="5">5 minutos</option>
+            <option value="10">10 minutos</option>
+            <option value="15" selected>15 minutos</option>
+            <option value="30">30 minutos</option>
+            <option value="60">1 hora</option>
+          </select>
+
+          <h4 style="color: var(--color-text); margin: 16px 0 8px; font-size: 15px;">Dificultad</h4>
+          <select class="input-field" id="mission-difficulty">
+            <option value="facil">Fácil 🌱</option>
+            <option value="media" selected>Media 🌿</option>
+            <option value="dificil">Difícil 🌳</option>
+          </select>
+        </div>
+
+        <div class="message-box">
+          <div style="font-size: 32px; margin-bottom: 8px;">💡</div>
+          <p class="message-text">Tip: Las mejores misiones son específicas, divertidas y fomentan actividades sin pantallas</p>
+        </div>
+
+        <button class="btn btn-primary" onclick="saveMission()">Crear misión</button>
+        <button class="btn btn-secondary" onclick="navigateTo('missions')">Cancelar</button>
+      </div>
+
+      <!-- Pantalla 7: Detalle de Misión -->
+      <div id="mission-detail" class="screen">
+        <div class="header">
+          <div class="back-btn" onclick="navigateTo('missions')">←</div>
+          <div class="title">Detalle de Misión</div>
+        </div>
+
+        <div style="text-align: center; margin: 30px 0;">
+          <div style="font-size: 80px;" id="detail-emoji">🟢</div>
+          <h2 style="color: var(--color-primary-darker); font-size: 24px; margin-top: 16px;" id="detail-title">Encuentra 3 objetos verdes</h2>
+          <p style="color: var(--color-text-secondary); margin-top: 12px;" id="detail-description">Busca en tu casa 3 cosas de color verde</p>
+        </div>
+
+        <div class="card">
+          <h3 style="color: var(--color-text); margin-bottom: 16px;">Información de la misión:</h3>
+          <div style="display: flex; justify-content: space-around; text-align: center; margin-top: 16px;">
+            <div>
+              <div style="font-size: 24px; font-weight: 700; color: var(--color-primary);" id="detail-duration">15 min</div>
+              <div style="font-size: 13px; color: var(--color-text-secondary);">Duración</div>
+            </div>
+            <div>
+              <div style="font-size: 24px; font-weight: 700; color: var(--color-primary);" id="detail-difficulty">Media 🌿</div>
+              <div style="font-size: 13px; color: var(--color-text-secondary);">Dificultad</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="message-box" style="margin-top: 20px;">
+          <div style="font-size: 40px; margin-bottom: 12px;">💡</div>
+          <p class="message-text">¿Sabías que observar el mundo real sin pantallas ayuda a tu creatividad y concentración?</p>
+        </div>
+
+        <button class="btn btn-primary" onclick="celebrateMission()">¡Misión Completada!</button>
+      </div>
+
+      <!-- Pantalla 8: Control Parental -->
+      <div id="parental-control" class="screen">
+        <div class="header">
+          <div class="back-btn" onclick="navigateTo('child-profile')">←</div>
+          <div class="title">Control Parental</div>
+        </div>
+
+        <p style="text-align: center; color: var(--color-text-secondary); margin-bottom: 20px;" id="parental-control-subtitle">Configuración</p>
+
+        <div class="card">
+          <h3 style="color: var(--color-text); margin-bottom: 16px;">Límites de tiempo</h3>
+          <div class="settings-item editable" onclick="editDailyLimit()">
+            <div class="settings-label">Límite diario</div>
+            <div style="font-weight: 700; color: var(--color-primary); display: flex; align-items: center; gap: 8px;" id="daily-limit-display">
+              <span>2 horas</span>
+              <span style="font-size: 12px;">✏️</span>
+            </div>
+          </div>
+          <div class="settings-item">
+            <div class="settings-label">Tiempo restante hoy</div>
+            <div style="font-weight: 700; color: var(--color-text);" id="time-remaining-display">1h 15min</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 style="color: var(--color-text); margin-bottom: 16px;">Horarios sin pantalla</h3>
+          <div class="settings-item">
+            <div>
+              <div class="settings-label">Durante la cena</div>
+              <div style="font-size: 13px; color: var(--color-text-secondary);">6:00 PM - 7:00 PM</div>
+            </div>
+            <div class="toggle-switch active" onclick="this.classList.toggle('active')">
+              <div class="toggle-knob"></div>
+            </div>
+          </div>
+          <div class="settings-item">
+            <div>
+              <div class="settings-label">Hora de hacer tareas</div>
+              <div style="font-size: 13px; color: var(--color-text-secondary);">4:00 PM - 5:30 PM</div>
+            </div>
+            <div class="toggle-switch active" onclick="this.classList.toggle('active')">
+              <div class="toggle-knob"></div>
+            </div>
+          </div>
+          <div class="settings-item">
+            <div>
+              <div class="settings-label">Antes de dormir</div>
+              <div style="font-size: 13px; color: var(--color-text-secondary);">8:00 PM - 7:00 AM</div>
+            </div>
+            <div class="toggle-switch active" onclick="this.classList.toggle('active')">
+              <div class="toggle-knob"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 style="color: var(--color-text); margin-bottom: 16px;">Opciones avanzadas</h3>
+          <div class="settings-item">
+            <div class="settings-label">Bloqueo temporal de apps</div>
+            <div class="toggle-switch" onclick="this.classList.toggle('active')">
+              <div class="toggle-knob"></div>
+            </div>
+          </div>
+          <div class="settings-item">
+            <div class="settings-label">Detectar patrones de estrés</div>
+            <div class="toggle-switch active" onclick="this.classList.toggle('active')">
+              <div class="toggle-knob"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="message-box">
+          <p class="message-text">💚 Estas configuraciones ayudan a crear hábitos saludables sin ser restrictivas</p>
+        </div>
+
+        <button class="btn btn-primary" onclick="saveParentalSettings()">Guardar cambios</button>
+      </div>
+
+      <!-- Pantalla 9: Recompensas -->
+      <div id="rewards" class="screen">
+        <div class="header">
+          <div class="back-btn" onclick="navigateTo('dashboard')">←</div>
+          <div class="title">Recompensas</div>
+        </div>
+
+        <div class="card" style="background: linear-gradient(135deg, #FFE082 0%, var(--color-surface) 100%); border: 2px solid var(--color-accent); text-align: center; padding: 30px 20px;">
+          <div style="font-size: 60px; margin-bottom: 12px;">🏆</div>
+          <h2 style="color: #F57F17; font-size: 22px; margin-bottom: 8px;">¡Excelente trabajo!</h2>
+          <p style="color: var(--color-text-secondary); font-size: 16px;">Has completado 3 misiones hoy</p>
+        </div>
+
+        <h3 style="color: var(--color-text); margin: 20px 0 12px;">Tu planta está creciendo</h3>
+        
+        <div class="card">
+          <div style="display: flex; align-items: center; gap: 16px;">
+            <div class="mini-plant" style="width: 80px; height: 100px;">
+              <svg viewBox="0 0 80 100" style="width: 100%; height: 100%;">
+                <path d="M25 80 L20 100 L60 100 L55 80 Z" fill="#E65100" />
+                <ellipse cx="40" cy="80" rx="18" ry="5" fill="#5D4037" />
+                <path d="M40 80 Q39 60 40 40" stroke="#43A047" stroke-width="4" fill="none" />
+                <ellipse cx="32" cy="60" rx="10" ry="14" fill="#66BB6A" transform="rotate(-30 32 60)" />
+                <ellipse cx="48" cy="55" rx="10" ry="14" fill="#81C784" transform="rotate(30 48 55)" />
+                <ellipse cx="35" cy="45" rx="12" ry="16" fill="#66BB6A" transform="rotate(-20 35 45)" />
+                <ellipse cx="45" cy="40" rx="12" ry="16" fill="#81C784" transform="rotate(20 45 40)" />
+              </svg>
+            </div>
+            <div style="flex: 1;">
+              <div style="font-size: 18px; font-weight: 700; color: var(--color-text); margin-bottom: 8px;">Nivel 3 - Planta Saludable</div>
+              <div class="progress-bar" style="height: 10px;">
+                <div class="progress-fill" style="width: 75%;"></div>
+              </div>
+              <div style="font-size: 13px; color: var(--color-text-secondary); margin-top: 6px;">75% hacia el siguiente nivel</div>
+            </div>
+          </div>
+        </div>
+
+        <h3 style="color: var(--color-text); margin: 20px 0 12px;">Elementos desbloqueados</h3>
+        
+        <div class="badge-container">
+          <div class="reward-badge" style="background: linear-gradient(135deg, #E65100 0%, #FF6F00 100%);">🏺</div>
+          <div class="reward-badge" style="background: linear-gradient(135deg, #0288D1 0%, #03A9F4 100%);">🏺</div>
+          <div class="reward-badge" style="background: linear-gradient(135deg, #7B1FA2 0%, #9C27B0 100%);">🏺</div>
+          <div class="reward-badge" style="background: linear-gradient(135deg, #C62828 0%, #E53935 100%);">🏺</div>
+        </div>
+
+        <div class="card" style="background: #E3F2FD;">
+          <div style="text-align: center;">
+            <div style="font-size: 40px; margin-bottom: 12px;">⭐</div>
+            <div style="font-size: 32px; font-weight: 800; color: var(--color-primary-darker);">24 estrellas</div>
+            <div style="color: var(--color-text-secondary); margin-top: 6px;">Esta semana</div>
+          </div>
+        </div>
+
+        <button class="btn btn-primary" onclick="navigateTo('dashboard')">Volver al inicio</button>
+      </div>
+
+      <!-- Pantalla 10: Estadísticas -->
+      <div id="stats" class="screen">
+        <div class="header">
+          <div class="back-btn" onclick="navigateTo('dashboard')">←</div>
+          <div class="title">Estadísticas</div>
+        </div>
+
+        <div class="card" style="background: linear-gradient(135deg, #E8EAF6 0%, var(--color-surface) 100%);">
+          <h3 style="color: var(--color-primary-darker); margin-bottom: 16px;">Resumen familiar esta semana</h3>
+          <div style="display: flex; justify-content: space-around; text-align: center;">
+            <div>
+              <div style="font-size: 28px; font-weight: 800; color: var(--color-primary);">92%</div>
+              <div style="font-size: 13px; color: var(--color-text-secondary);">Metas cumplidas</div>
+            </div>
+            <div>
+              <div style="font-size: 28px; font-weight: 800; color: var(--color-primary);">8.5h</div>
+              <div style="font-size: 13px; color: var(--color-text-secondary);">Tiempo promedio</div>
+            </div>
+          </div>
+        </div>
+
+        <h3 style="color: var(--color-text); margin: 20px 0 12px;">Tiempo por persona (esta semana)</h3>
+        
+        <div class="chart-container" id="stats-chart-container">
+          <!-- Los gráficos se generarán dinámicamente -->
+        </div>
+
+        <h3 style="color: var(--color-text); margin: 20px 0 12px;">Patrones positivos detectados</h3>
+        
+        <div class="card">
+          <div style="padding: 10px; background: var(--color-primary-lighter); border-radius: 12px; margin: 8px 0;">
+            <div style="color: var(--color-text); font-weight: 600;">✓ Menos uso antes de dormir</div>
+            <div style="font-size: 13px; color: var(--color-text-secondary); margin-top: 4px;">Mejora en la rutina nocturna</div>
+          </div>
+          <div style="padding: 10px; background: var(--color-primary-lighter); border-radius: 12px; margin: 8px 0;">
+            <div style="color: var(--color-text); font-weight: 600;">✓ Más actividades al aire libre</div>
+            <div style="font-size: 13px; color: var(--color-text-secondary); margin-top: 4px;">+3 horas de juego exterior esta semana</div>
+          </div>
+        </div>
+
+        <div class="card" style="background: linear-gradient(135deg, #FFF9C4 0%, var(--color-surface) 100%);">
+          <h3 style="color: #F57F17; margin-bottom: 12px;">🏆 Logros familiares</h3>
+          <div style="font-size: 14px; color: #424242; line-height: 1.8;">
+            ✨ 5 días cumpliendo todas las metas<br>
+            🌟 15 misiones completadas en familia<br>
+            🎯 Racha de 3 semanas sin exceder límites
+          </div>
+        </div>
+
+        <button class="btn btn-primary" onclick="navigateTo('dashboard')">Volver al inicio</button>
+      </div>
+
+      <!-- Pantalla 11: Ajustes -->
+      <div id="settings" class="screen">
+        <div class="header">
+          <div class="back-btn" onclick="navigateTo('dashboard')">←</div>
+          <div class="title">Ajustes</div>
+        </div>
+
+        <div class="card">
+          <h3 style="color: var(--color-text); margin-bottom: 16px;">👤 Cuenta</h3>
+          <div class="settings-item">
+            <div class="settings-label" id="user-email-display">correo@ejemplo.com</div>
+          </div>
+          <div class="settings-item">
+            <div class="settings-label" id="user-name-display">Usuario</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 style="color: var(--color-text); margin-bottom: 16px;">⚙️ Configuración general</h3>
+          <div class="settings-item">
+            <div class="settings-label">🌍 Idioma</div>
+            <div style="color: var(--color-text-secondary);">Español</div>
+          </div>
+          <div class="settings-item">
+            <div class="settings-label">🔔 Notificaciones</div>
+            <div class="toggle-switch active" onclick="this.classList.toggle('active')">
+              <div class="toggle-knob"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 style="color: var(--color-text); margin-bottom: 16px;">👨‍👩‍👧‍👦 Información familiar</h3>
+          <div class="settings-item">
+            <div class="settings-label">Miembros del grupo</div>
+            <div style="color: var(--color-text-secondary);" id="family-count">0 personas</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 style="color: var(--color-text); margin-bottom: 16px;">ℹ️ Acerca de</h3>
+          <div style="text-align: center; padding: 12px;">
+            <div style="font-size: 50px; margin-bottom: 12px;">🌱</div>
+            <div style="font-weight: 700; color: var(--color-text); font-size: 18px;">DetoxTime</div>
+            <div style="color: var(--color-text-secondary); font-size: 14px; margin-top: 6px;">Versión Padres 1.0</div>
+            <div style="color: #9E9E9E; font-size: 12px; margin-top: 12px;">Cultivando hábitos saludables en familia</div>
+          </div>
+        </div>
+
+        <button class="btn btn-danger" onclick="logout()">Cerrar Sesión</button>
+      </div>
+
+    </div>
+   </div>
+  </div>
+
+  <!-- Modal para agregar miembro -->
+  <div id="add-member-modal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-title">Agregar Miembro de Familia</div>
+      <div id="add-member-alert" class="alert"></div>
+      
+      <div class="input-group">
+        <label>Nombre del miembro</label>
+        <input type="text" id="member-name-input" class="input-field" placeholder="Ej: Sofía" maxlength="30">
+        <div id="member-name-error" class="error-message">El nombre es requerido</div>
+      </div>
+
+      <div class="input-group">
+        <label>Edad</label>
+        <input type="number" id="member-age-input" class="input-field" placeholder="Edad" min="1" max="99">
+        <div id="member-age-error" class="error-message">La edad es requerida</div>
+      </div>
+
+      <div class="input-group">
+        <label>Límite diario (horas)</label>
+        <select id="member-limit-input" class="input-field">
+          <option value="1">1 hora</option>
+          <option value="2" selected>2 horas</option>
+          <option value="3">3 horas</option>
+          <option value="4">4 horas</option>
+          <option value="5">5 horas</option>
+        </select>
+      </div>
+
+      <button class="btn btn-primary" onclick="addFamilyMember()">Agregar Miembro</button>
+      <button class="btn btn-secondary" onclick="closeAddMemberModal()">Cancelar</button>
+    </div>
+  </div>
+
+  <!-- Modal para editar límite diario -->
+  <div id="edit-limit-modal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-title">Editar Límite Diario</div>
+      <div id="edit-limit-alert" class="alert"></div>
+      
+      <div class="input-group">
+        <label>Límite diario (horas)</label>
+        <select id="edit-limit-input" class="input-field">
+          <option value="0.5">30 minutos</option>
+          <option value="1">1 hora</option>
+          <option value="1.5">1 hora 30 minutos</option>
+          <option value="2">2 horas</option>
+          <option value="2.5">2 horas 30 minutos</option>
+          <option value="3">3 horas</option>
+          <option value="3.5">3 horas 30 minutos</option>
+          <option value="4">4 horas</option>
+          <option value="5">5 horas</option>
+        </select>
+      </div>
+
+      <button class="btn btn-primary" onclick="saveDailyLimit()">Guardar Cambios</button>
+      <button class="btn btn-secondary" onclick="closeEditLimitModal()">Cancelar</button>
+    </div>
+  </div>
+
+  <div id="celebration" class="celebration"></div>
+
+  <script>
+    // ==================== VARIABLES GLOBALES ====================
+    
+    let currentUser = null;
+    let selectedEmoji = '🎯';
+    let missions = [];
+    let familyMembers = [];
+    let currentSelectedMember = null;
+
+    // Misiones predefinidas
+    const defaultMissions = [
+      { emoji: '🟢', title: 'Encuentra 3 objetos verdes', description: 'Busca en tu casa 3 cosas de color verde', duration: 15, difficulty: 'facil', completed: false },
+      { emoji: '🎵', title: 'Canta tu canción favorita', description: 'Canta con toda tu energía durante 2 minutos', duration: 10, difficulty: 'facil', completed: false },
+      { emoji: '✏️', title: 'Dibuja algo especial', description: 'Haz un dibujo sin mirar ninguna pantalla', duration: 20, difficulty: 'media', completed: false }
+    ];
+
+    // Misiones adicionales para generar aleatoriamente
+    const randomMissions = [
+      { emoji: '🌳', title: 'Explora la naturaleza', description: 'Sal al jardín y observa 5 tipos diferentes de plantas', duration: 30, difficulty: 'media' },
+      { emoji: '📚', title: 'Lee un cuento', description: 'Lee un libro por 15 minutos sin interrupciones', duration: 15, difficulty: 'facil' },
+      { emoji: '🏃', title: 'Actividad física', description: 'Haz ejercicio o baila por 10 minutos', duration: 10, difficulty: 'media' },
+      { emoji: '🧩', title: 'Resuelve un rompecabezas', description: 'Arma un rompecabezas de al menos 20 piezas', duration: 20, difficulty: 'media' },
+      { emoji: '🎨', title: 'Arte creativo', description: 'Crea una obra de arte con materiales reciclados', duration: 30, difficulty: 'dificil' },
+      { emoji: '⚽', title: 'Juega al aire libre', description: 'Juega con una pelota por 20 minutos', duration: 20, difficulty: 'facil' },
+      { emoji: '🍎', title: 'Prepara una ensalada', description: 'Ayuda a preparar una ensalada de frutas', duration: 15, difficulty: 'media' }
+    ];
+
+    // ==================== INICIALIZACIÓN ====================
+
+    function initApp() {
+      checkSession();
+      initializeMissions();
+      initializeFamilyMembers();
+      renderMissions();
+      renderFamilyMembers();
+      renderStatsChart();
+      setupEventListeners();
+      updateFamilyCount();
+    }
+
+    // ==================== AUTENTICACIÓN ====================
+
+    function checkSession() {
+      const sessionData = localStorage.getItem('familiasp_session');
+      if (sessionData) {
+        currentUser = JSON.parse(sessionData);
+        updateUserDisplay();
+      }
+    }
+
+    function checkAuthAndNavigate() {
+      if (currentUser) {
+        navigateTo('dashboard');
+      } else {
+        navigateTo('login');
+      }
+    }
+
+    function isValidEmail(email) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email);
+    }
+
+    function showAlert(elementId, message, type) {
+      const alertElement = document.getElementById(elementId);
+      if (!alertElement) return;
+      alertElement.textContent = message;
+      alertElement.className = `alert alert-${type} show`;
+      setTimeout(() => {
+        alertElement.classList.remove('show');
+      }, 5000);
+    }
+
+    function showFieldError(fieldId, errorId, show = true) {
+      const field = document.getElementById(fieldId);
+      const error = document.getElementById(errorId);
+      if (!field || !error) return;
+      if (show) {
+        field.classList.add('error');
+        error.classList.add('show');
+      } else {
+        field.classList.remove('error');
+        error.classList.remove('show');
+      }
+    }
+
+    function clearLoginForm() {
+      document.getElementById('login-email').value = '';
+      document.getElementById('login-password').value = '';
+      showFieldError('login-email', 'login-email-error', false);
+      showFieldError('login-password', 'login-password-error', false);
+    }
+
+    function clearRegisterForm() {
+      document.getElementById('register-name').value = '';
+      document.getElementById('register-email').value = '';
+      document.getElementById('register-password').value = '';
+      document.getElementById('register-password-confirm').value = '';
+      showFieldError('register-name', 'register-name-error', false);
+      showFieldError('register-email', 'register-email-error', false);
+      showFieldError('register-password', 'register-password-error', false);
+      showFieldError('register-password-confirm', 'register-password-confirm-error', false);
+    }
+
+    function login() {
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
+
+      showFieldError('login-email', 'login-email-error', false);
+      showFieldError('login-password', 'login-password-error', false);
+
+      let hasError = false;
+
+      if (!email || !isValidEmail(email)) {
+        showFieldError('login-email', 'login-email-error', true);
+        hasError = true;
+      }
+
+      if (!password) {
+        showFieldError('login-password', 'login-password-error', true);
+        hasError = true;
+      }
+
+      if (hasError) return;
+
+      const users = JSON.parse(localStorage.getItem('familiasp_users') || '[]');
+      const user = users.find(u => u.email === email && u.password === password);
+
+      if (user) {
+        currentUser = { email: user.email, name: user.name };
+        localStorage.setItem('familiasp_session', JSON.stringify(currentUser));
+        updateUserDisplay();
+        showAlert('login-alert', '¡Bienvenido/a de nuevo!', 'success');
+        clearLoginForm();
+        setTimeout(() => {
+          navigateTo('dashboard');
+        }, 1000);
+      } else {
+        showAlert('login-alert', 'Credenciales incorrectas. Por favor verifica tu email y contraseña.', 'error');
+      }
+    }
+
+    function register() {
+      const name = document.getElementById('register-name').value.trim();
+      const email = document.getElementById('register-email').value.trim();
+      const password = document.getElementById('register-password').value;
+      const confirmPassword = document.getElementById('register-password-confirm').value;
+
+      showFieldError('register-name', 'register-name-error', false);
+      showFieldError('register-email', 'register-email-error', false);
+      showFieldError('register-password', 'register-password-error', false);
+      showFieldError('register-password-confirm', 'register-password-confirm-error', false);
+
+      let hasError = false;
+
+      if (!name) {
+        showFieldError('register-name', 'register-name-error', true);
+        hasError = true;
+      }
+
+      if (!email || !isValidEmail(email)) {
+        showFieldError('register-email', 'register-email-error', true);
+        hasError = true;
+      }
+
+      if (!password || password.length < 6) {
+        showFieldError('register-password', 'register-password-error', true);
+        hasError = true;
+      }
+
+      if (password !== confirmPassword) {
+        showFieldError('register-password-confirm', 'register-password-confirm-error', true);
+        hasError = true;
+      }
+
+      if (hasError) return;
+
+      const users = JSON.parse(localStorage.getItem('familiasp_users') || '[]');
+      if (users.find(u => u.email === email)) {
+        showAlert('register-alert', 'El correo que usted ingresó ya está ocupado. Por favor, use otro correo o inicie sesión.', 'error');
+        return;
+      }
+
+      users.push({ name, email, password });
+      localStorage.setItem('familiasp_users', JSON.stringify(users));
+
+      currentUser = { email, name };
+      localStorage.setItem('familiasp_session', JSON.stringify(currentUser));
+      updateUserDisplay();
+
+      showAlert('register-alert', '¡Cuenta creada exitosamente!', 'success');
+      clearRegisterForm();
+      setTimeout(() => {
+        navigateTo('dashboard');
+      }, 1000);
+    }
+
+    function logout() {
+      currentUser = null;
+      localStorage.removeItem('familiasp_session');
+      clearLoginForm();
+      clearRegisterForm();
+      showAlert('splash-alert', '✅ Se ha cerrado sesión correctamente', 'info');
+      navigateTo('splash');
+    }
+
+    function updateUserDisplay() {
+      if (currentUser) {
+        const emailDisplay = document.getElementById('user-email-display');
+        const nameDisplay = document.getElementById('user-name-display');
+        if (emailDisplay) emailDisplay.textContent = currentUser.email;
+        if (nameDisplay) nameDisplay.textContent = currentUser.name;
+      }
+    }
+
+    // ==================== NAVEGACIÓN ====================
+
+    function navigateTo(screenId) {
+      const protectedScreens = ['dashboard', 'child-profile', 'missions', 'create-mission', 'mission-detail', 'parental-control', 'rewards', 'stats', 'settings'];
+      
+      if (protectedScreens.includes(screenId) && !currentUser) {
+        showAlert('login-alert', 'Debes iniciar sesión para acceder a esta sección', 'error');
+        navigateTo('login');
+        return;
+      }
+
+      const screens = document.querySelectorAll('.screen');
+      screens.forEach(screen => screen.classList.remove('active'));
+      document.getElementById(screenId).classList.add('active');
+      document.querySelector('.screen-content').scrollTop = 0;
+
+      // Limpiar formularios al navegar
+      if (screenId === 'login') {
+        clearLoginForm();
+        clearRegisterForm();
+      }
+      if (screenId === 'create-mission') {
+        document.getElementById('mission-title-input').value = '';
+        document.getElementById('mission-description-input').value = '';
+        showFieldError('mission-title-input', 'mission-title-error', false);
+        showFieldError('mission-description-input', 'mission-description-error', false);
+      }
+    }
+
+    function switchTab(tabId) {
+      const tabs = document.querySelectorAll('.tab');
+      const tabContents = document.querySelectorAll('.tab-content');
+      
+      tabs.forEach(tab => tab.classList.remove('active'));
+      tabContents.forEach(content => content.classList.remove('active'));
+      
+      if (tabId === 'login-tab') {
+        tabs[0].classList.add('active');
+      } else {
+        tabs[1].classList.add('active');
+      }
+      
+      document.getElementById(tabId).classList.add('active');
+    }
+
+    // ==================== MIEMBROS DE FAMILIA ====================
+
+    function initializeFamilyMembers() {
+      const storedMembers = localStorage.getItem('familiasp_members');
+      if (storedMembers) {
+        familyMembers = JSON.parse(storedMembers);
+      } else {
+        familyMembers = [
+          { id: 1, name: 'Sofía', age: 8, timeToday: 45, dailyLimit: 120, color: '#E65100' },
+          { id: 2, name: 'Lucas', age: 10, timeToday: 80, dailyLimit: 120, color: '#0288D1' }
+        ];
+        saveFamilyMembers();
+      }
+    }
+
+    function saveFamilyMembers() {
+      localStorage.setItem('familiasp_members', JSON.stringify(familyMembers));
+      updateFamilyCount();
+    }
+
+    function updateFamilyCount() {
+      const countElement = document.getElementById('family-count');
+      if (countElement) {
+        countElement.textContent = `${familyMembers.length} personas`;
+      }
+    }
+
+    function renderFamilyMembers() {
+      const container = document.getElementById('family-members-container');
+      if (!container) return;
+
+      container.innerHTML = '';
+
+      familyMembers.forEach(member => {
+        const percentage = (member.timeToday / member.dailyLimit) * 100;
+        const memberDiv = document.createElement('div');
+        memberDiv.className = 'family-member';
+        memberDiv.onclick = () => selectMember(member);
+        
+        memberDiv.innerHTML = `
+          <button class="delete-member-btn" onclick="event.stopPropagation(); deleteMember(${member.id})">×</button>
+          <div class="mini-plant">
+            <svg viewBox="0 0 50 60" style="width: 100%; height: 100%;">
+              <path d="M15 50 L12 60 L38 60 L35 50 Z" fill="${member.color}" />
+              <ellipse cx="25" cy="50" rx="12" ry="3" fill="#5D4037" />
+              <path d="M25 50 Q24 40 25 30" stroke="#43A047" stroke-width="3" fill="none" />
+              <ellipse cx="20" cy="38" rx="6" ry="8" fill="#66BB6A" transform="rotate(-30 20 38)" />
+              <ellipse cx="30" cy="35" rx="6" ry="8" fill="#81C784" transform="rotate(30 30 35)" />
+            </svg>
+          </div>
+          <div class="member-info">
+            <div class="member-name">${member.name}</div>
+            <div class="screen-time">⏱️ ${member.timeToday} min hoy</div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: ${percentage}%;"></div>
+            </div>
+          </div>
+          <div style="font-size: 24px;">→</div>
+        `;
+        
+        container.appendChild(memberDiv);
+      });
+    }
+
+    function selectMember(member) {
+      currentSelectedMember = member;
+      document.getElementById('child-profile-title').textContent = `Perfil de ${member.name}`;
+      document.getElementById('child-time-today').textContent = `${member.timeToday} min`;
+      document.getElementById('child-time-limit').textContent = `de ${Math.floor(member.dailyLimit / 60)} horas permitidas`;
+      const percentage = (member.timeToday / member.dailyLimit) * 100;
+      document.getElementById('child-progress').style.width = `${percentage}%`;
+      document.getElementById('parental-control-subtitle').textContent = `Configuración para ${member.name}`;
+      document.getElementById('daily-limit-display').innerHTML = `
+        <span>${Math.floor(member.dailyLimit / 60)} horas</span>
+        <span style="font-size: 12px;">✏️</span>
+      `;
+      const remaining = member.dailyLimit - member.timeToday;
+      const hours = Math.floor(remaining / 60);
+      const mins = remaining % 60;
+      document.getElementById('time-remaining-display').textContent = `${hours}h ${mins}min`;
+      navigateTo('child-profile');
+    }
+
+    function showAddMemberModal() {
+      document.getElementById('add-member-modal').classList.add('show');
+      document.getElementById('member-name-input').value = '';
+      document.getElementById('member-age-input').value = '';
+      showFieldError('member-name-input', 'member-name-error', false);
+      showFieldError('member-age-input', 'member-age-error', false);
+    }
+
+    function closeAddMemberModal() {
+      document.getElementById('add-member-modal').classList.remove('show');
+    }
+
+    function addFamilyMember() {
+      const name = document.getElementById('member-name-input').value.trim();
+      const age = document.getElementById('member-age-input').value;
+      const limit = parseFloat(document.getElementById('member-limit-input').value) * 60;
+
+      showFieldError('member-name-input', 'member-name-error', false);
+      showFieldError('member-age-input', 'member-age-error', false);
+
+      let hasError = false;
+
+      if (!name) {
+        showFieldError('member-name-input', 'member-name-error', true);
+        hasError = true;
+      }
+
+      if (!age || age < 1) {
+        showFieldError('member-age-input', 'member-age-error', true);
+        hasError = true;
+      }
+
+      if (hasError) return;
+
+      const colors = ['#E65100', '#0288D1', '#7B1FA2', '#F57C00', '#C62828', '#388E3C'];
+      const newMember = {
+        id: Date.now(),
+        name,
+        age: parseInt(age),
+        timeToday: 0,
+        dailyLimit: limit,
+        color: colors[familyMembers.length % colors.length]
+      };
+
+      familyMembers.push(newMember);
+      saveFamilyMembers();
+      renderFamilyMembers();
+      renderStatsChart();
+      
+      showAlert('add-member-alert', '✅ Miembro agregado exitosamente', 'success');
+      setTimeout(() => {
+        closeAddMemberModal();
+      }, 1500);
+    }
+
+    function deleteMember(memberId) {
+      const member = familyMembers.find(m => m.id === memberId);
+      if (!member) return;
+
+      if (confirm(`¿Estás seguro que deseas eliminar a ${member.name} de la familia?`)) {
+        familyMembers = familyMembers.filter(m => m.id !== memberId);
+        saveFamilyMembers();
+        renderFamilyMembers();
+        renderStatsChart();
+      }
+    }
+
+    function editDailyLimit() {
+      if (!currentSelectedMember) return;
+      document.getElementById('edit-limit-input').value = currentSelectedMember.dailyLimit / 60;
+      document.getElementById('edit-limit-modal').classList.add('show');
+    }
+
+    function closeEditLimitModal() {
+      document.getElementById('edit-limit-modal').classList.remove('show');
+    }
+
+    function saveDailyLimit() {
+      if (!currentSelectedMember) return;
+      
+      const newLimit = parseFloat(document.getElementById('edit-limit-input').value) * 60;
+      const memberIndex = familyMembers.findIndex(m => m.id === currentSelectedMember.id);
+      
+      if (memberIndex !== -1) {
+        familyMembers[memberIndex].dailyLimit = newLimit;
+        currentSelectedMember.dailyLimit = newLimit;
+        saveFamilyMembers();
+        renderFamilyMembers();
+        
+        // Actualizar display
+        document.getElementById('daily-limit-display').innerHTML = `
+          <span>${Math.floor(newLimit / 60)} horas</span>
+          <span style="font-size: 12px;">✏️</span>
+        `;
+        
+        showAlert('edit-limit-alert', '✅ Límite actualizado correctamente', 'success');
+        setTimeout(() => {
+          closeEditLimitModal();
+        }, 1500);
+      }
+    }
+
+    function saveParentalSettings() {
+      showAlert('splash-alert', '✅ Configuración guardada correctamente', 'success');
+      setTimeout(() => {
+        navigateTo('child-profile');
+      }, 1500);
+    }
+
+    // ==================== MISIONES ====================
+
+    function initializeMissions() {
+      const storedMissions = localStorage.getItem('familiasp_missions');
+      if (storedMissions) {
+        missions = JSON.parse(storedMissions);
+      } else {
+        missions = [...defaultMissions];
+        saveMissions();
+      }
+    }
+
+    function saveMissions() {
+      localStorage.setItem('familiasp_missions', JSON.stringify(missions));
+    }
+
+    function renderMissions() {
+      const container = document.getElementById('missions-container');
+      if (!container) return;
+
+      container.innerHTML = '';
+      
+      const activeMissions = missions.filter(m => !m.completed);
+      
+      const counter = document.getElementById('missions-count');
+      if (counter) {
+        counter.textContent = `${activeMissions.length} misiones disponibles hoy`;
+      }
+
+      activeMissions.forEach((mission) => {
+        const missionCard = document.createElement('div');
+        missionCard.className = 'mission-card';
+        missionCard.onclick = () => showMissionDetail(mission);
+        
+        missionCard.innerHTML = `
+          <div class="mission-icon">${mission.emoji}</div>
+          <div class="mission-title">${mission.title}</div>
+          <p style="text-align: center; color: var(--color-text-secondary); font-size: 14px; margin-top: 8px;">${mission.description}</p>
+          <div style="display: flex; justify-content: center; gap: 8px; margin-top: 12px;">
+            ${[1, 2, 3].map(i => `
+              <div style="background: #E0E0E0; width: 30px; height: 30px; border-radius: 50%;"></div>
+            `).join('')}
+          </div>
+        `;
+        
+        container.appendChild(missionCard);
+      });
+
+      if (activeMissions.length === 0) {
+        container.innerHTML = `
+          <div class="message-box">
+            <div style="font-size: 40px; margin-bottom: 12px;">🎉</div>
+            <p class="message-text">¡Todas las misiones completadas! Crea una nueva o pide otra sugerencia.</p>
+          </div>
+        `;
+      }
+    }
+
+    function showMissionDetail(mission) {
+      document.getElementById('detail-emoji').textContent = mission.emoji;
+      document.getElementById('detail-title').textContent = mission.title;
+      document.getElementById('detail-description').textContent = mission.description;
+      document.getElementById('detail-duration').textContent = `${mission.duration} min`;
+      
+      const difficultyMap = {
+        'facil': 'Fácil 🌱',
+        'media': 'Media 🌿',
+        'dificil': 'Difícil 🌳'
+      };
+      document.getElementById('detail-difficulty').textContent = difficultyMap[mission.difficulty];
+      
+      window.currentMissionToComplete = mission;
+      
+      navigateTo('mission-detail');
+    }
+
+    function addRandomMission() {
+      const availableMissions = randomMissions.filter(rm => 
+        !missions.some(m => m.title === rm.title)
+      );
+      
+      if (availableMissions.length === 0) {
+        alert('¡Ya has agregado todas las misiones disponibles! Crea una personalizada.');
+        return;
+      }
+      
+      const randomIndex = Math.floor(Math.random() * availableMissions.length);
+      const newMission = { ...availableMissions[randomIndex], completed: false };
+      
+      missions.push(newMission);
+      saveMissions();
+      renderMissions();
+      
+      showAlert('create-mission-alert', '¡Nueva misión agregada!', 'success');
+    }
+
+    function saveMission() {
+      const title = document.getElementById('mission-title-input').value.trim();
+      const description = document.getElementById('mission-description-input').value.trim();
+      const duration = document.getElementById('mission-duration').value;
+      const difficulty = document.getElementById('mission-difficulty').value;
+
+      showFieldError('mission-title-input', 'mission-title-error', false);
+      showFieldError('mission-description-input', 'mission-description-error', false);
+
+      let hasError = false;
+
+      if (!title) {
+        showFieldError('mission-title-input', 'mission-title-error', true);
+        hasError = true;
+      }
+
+      if (!description) {
+        showFieldError('mission-description-input', 'mission-description-error', true);
+        hasError = true;
+      }
+
+      if (hasError) return;
+
+      const newMission = {
+        emoji: selectedEmoji,
+        title,
+        description,
+        duration: parseInt(duration),
+        difficulty,
+        completed: false
+      };
+
+      missions.push(newMission);
+      saveMissions();
+      renderMissions();
+
+      document.getElementById('mission-title-input').value = '';
+      document.getElementById('mission-description-input').value = '';
+      
+      showAlert('create-mission-alert', '¡Misión creada exitosamente!', 'success');
+      
+      setTimeout(() => {
+        navigateTo('missions');
+      }, 1500);
+    }
+
+    function celebrateMission() {
+      const celebration = document.getElementById('celebration');
+      const colors = ['#FFD54F', '#66BB6A', '#42A5F5', '#FF6F00', '#81C784'];
+      
+      for (let i = 0; i < 30; i++) {
+        setTimeout(() => {
+          const confetti = document.createElement('div');
+          confetti.className = 'confetti';
+          confetti.style.left = Math.random() * 100 + '%';
+          confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+          confetti.style.animationDelay = Math.random() * 0.5 + 's';
+          celebration.appendChild(confetti);
+          
+          setTimeout(() => confetti.remove(), 3000);
+        }, i * 100);
+      }
+      
+      if (window.currentMissionToComplete) {
+        const missionIndex = missions.findIndex(m => 
+          m.title === window.currentMissionToComplete.title
+        );
+        if (missionIndex !== -1) {
+          missions[missionIndex].completed = true;
+          saveMissions();
+          renderMissions();
+        }
+      }
+      
+      setTimeout(() => {
+        navigateTo('rewards');
+      }, 2000);
+    }
+
+    // ==================== ESTADÍSTICAS ====================
+
+    function renderStatsChart() {
+      const container = document.getElementById('stats-chart-container');
+      if (!container) return;
+
+      container.innerHTML = '';
+
+      familyMembers.forEach(member => {
+        const weeklyTime = Math.floor(member.timeToday * 7 / 60 * 10) / 10; // Simular tiempo semanal
+        const percentage = Math.min((weeklyTime / 10) * 100, 100);
+        
+        const barDiv = document.createElement('div');
+        barDiv.className = 'chart-bar';
+        barDiv.innerHTML = `
+          <div class="chart-label">${member.name}</div>
+          <div class="chart-bar-fill" style="width: ${percentage}%;"></div>
+          <div class="chart-value">${weeklyTime}h</div>
+        `;
+        container.appendChild(barDiv);
+      });
+    }
+
+    // ==================== EVENT LISTENERS ====================
+
+    function setupEventListeners() {
+      const emojiOptions = document.querySelectorAll('.emoji-option');
+      emojiOptions.forEach(option => {
+        option.addEventListener('click', function() {
+          emojiOptions.forEach(opt => opt.classList.remove('selected'));
+          this.classList.add('selected');
+          selectedEmoji = this.dataset.emoji;
+        });
+      });
+
+      const loginEmail = document.getElementById('login-email');
+      const loginPassword = document.getElementById('login-password');
+      
+      if (loginEmail) {
+        loginEmail.addEventListener('keypress', function(e) {
+          if (e.key === 'Enter') login();
+        });
+      }
+      
+      if (loginPassword) {
+        loginPassword.addEventListener('keypress', function(e) {
+          if (e.key === 'Enter') login();
+        });
+      }
+
+      const registerConfirm = document.getElementById('register-password-confirm');
+      if (registerConfirm) {
+        registerConfirm.addEventListener('keypress', function(e) {
+          if (e.key === 'Enter') register();
+        });
+      }
+
+      // Cerrar modales al hacer clic fuera
+      document.getElementById('add-member-modal').addEventListener('click', function(e) {
+        if (e.target === this) closeAddMemberModal();
+      });
+
+      document.getElementById('edit-limit-modal').addEventListener('click', function(e) {
+        if (e.target === this) closeEditLimitModal();
+      });
+    }
+
+    // ==================== INICIALIZACIÓN ====================
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initApp);
+    } else {
+      initApp();
+    }
+  </script>
+ </body>
+</html>
